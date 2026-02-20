@@ -3,12 +3,16 @@ public class Main {
         System.out.println("=== Student Onboarding ===");
         Database db = new FakeDb();
         StudentParser parser = new StudentParser();
-        StudentValidator validator = new StudentValidator();
         ConsoleOnboardingReporter reporter = new ConsoleOnboardingReporter();
+        ProgramList programList = new ProgramList();
+        programList.add("CSE");
+        StudentValidator validator = new StudentValidator(programList);
         OnboardingService svc = new OnboardingService(db, parser, validator, reporter);
 
         String raw = "name=Riya;email=riya@sst.edu;phone=9876543210;program=CSE";
         svc.registerFromRawInput(raw);
+        String raw2 = "name=Vikram;email=vikram@sst.edu;phone=9876543211;program=IT";
+        svc.registerFromRawInput(raw2);
 
         System.out.println();
         System.out.println("-- DB DUMP --");
