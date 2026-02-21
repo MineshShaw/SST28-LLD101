@@ -1,15 +1,13 @@
 public class LegacyRoomTypes {
-    public static final int SINGLE = 1;
-    public static final int DOUBLE = 2;
-    public static final int TRIPLE = 3;
-    public static final int DELUXE = 4;
+    public static final PricingComponent SINGLE = new SingleRoomPricing();
+    public static final PricingComponent DOUBLE = new DoubleRoomPricing();
+    public static final PricingComponent TRIPLE = new TripleRoomPricing();
+    public static final PricingComponent DELUXE = new DeluxeRoomPricing();
 
-    public static String nameOf(int t) {
-        return switch (t) {
-            case SINGLE -> "SINGLE";
-            case DOUBLE -> "DOUBLE";
-            case TRIPLE -> "TRIPLE";
-            default -> "DELUXE";
-        };
+    public static String nameOf(PricingComponent component) {
+        if (component == SINGLE) return "SINGLE";
+        if (component == DOUBLE) return "DOUBLE";
+        if (component == TRIPLE) return "TRIPLE";
+        return "DELUXE";
     }
 }
