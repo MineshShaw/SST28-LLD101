@@ -9,7 +9,18 @@ public class Main {
         menu.addMenuItem(new MenuItem("C1", "Coffee", 30.00));
         menu.addMenuItem(new MenuItem("S1", "Sandwich", 60.00));
         FileStore store = new FileStore();
-        CafeteriaSystem sys = new CafeteriaSystem(menu, store);
+        PricingService pricingService = new PricingService();
+        InvoiceFormatter formatter = new InvoiceFormatter();
+        Map<String, TaxPolicy> taxMap = new HashMap<>();
+        taxMap.put("student", new StudentTaxPolicy());
+        taxMap.put("staff", new StaffTaxPolicy());
+
+        Map<String, DiscountPolicy> discountMap = new HashMap<>();
+        discountMap.put("student", new StudentDiscountPolicy());
+        discountMap.put("staff", new StaffDiscountPolicy());
+
+        PolicyResolver resolver = new PolicyResolver(taxMap, discountMap);
+        CafeteriaSystem sys = new CafeteriaSystem(menu, store, pricingService, formatter, resolver);
         
         List<OrderLine> order = List.of(
                 new OrderLine("M1", 2),

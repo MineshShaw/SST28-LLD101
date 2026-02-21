@@ -2,19 +2,19 @@ import java.util.*;
 
 public class CafeteriaSystem {
     private final Menu menu;
-    
+    private final PolicyResolver resolver;
     private final InvoiceService invoiceService;
     
 
-    public CafeteriaSystem(Menu menu, FileStore store) {
+    public CafeteriaSystem(Menu menu, FileStore store, PricingService pricingService, InvoiceFormatter formatter, PolicyResolver resolver) {
          this.menu = menu;
-         this.invoiceService = new InvoiceService(store);
+         this.resolver = resolver;
+         this.invoiceService = new InvoiceService(store, pricingService, formatter);
     }
 
-    // Intentionally SRP-violating: menu mgmt + tax + discount + format + persistence.
     public void checkout(String customerType, List<OrderLine> lines) {
-        String invoice = invoiceService.generateInvoice(menu, lines, customerType);
-
-        System.out.print(invoice);        
+        TaxPolicy taxPolicy = resolver.resolveTax(customerType);
+        DiscountPolicy discountPolicy = resolver.resolveDiscount(customerType);
+        invoiceService.generateInvoice(menu, lines, taxPolicy, discountPolicy);             
     }
 }
