@@ -10,7 +10,7 @@ public class Main {
         menu.addMenuItem(new MenuItem("S1", "Sandwich", 60.00));
         FileStore store = new FileStore();
         PricingService pricingService = new PricingService();
-        InvoiceFormatter formatter = new InvoiceFormatter();
+
         Map<String, TaxPolicy> taxMap = new HashMap<>();
         taxMap.put("student", new StudentTaxPolicy());
         taxMap.put("staff", new StaffTaxPolicy());
@@ -20,7 +20,7 @@ public class Main {
         discountMap.put("staff", new StaffDiscountPolicy());
 
         PolicyResolver resolver = new PolicyResolver(taxMap, discountMap);
-        CafeteriaSystem sys = new CafeteriaSystem(menu, store, pricingService, formatter, resolver);
+        CafeteriaSystem sys = new CafeteriaSystem(menu, store, pricingService, resolver);
         
         List<OrderLine> order = List.of(
                 new OrderLine("M1", 2),

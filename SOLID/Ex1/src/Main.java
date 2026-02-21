@@ -3,11 +3,10 @@ public class Main {
         System.out.println("=== Student Onboarding ===");
         Database db = new FakeDb();
         StudentParser parser = new StudentParser();
-        ConsoleReporter reporter = new ConsoleReporter();
         ProgramList programList = new ProgramList();
         programList.add("CSE");
         StudentValidator validator = new StudentValidator(programList);
-        OnboardingService svc = new OnboardingService(db, parser, validator, reporter);
+        OnboardingService svc = new OnboardingService(db, parser, validator);
 
         String raw = "name=Riya;email=riya@sst.edu;phone=9876543210;program=CSE";
         svc.registerFromRawInput(raw);

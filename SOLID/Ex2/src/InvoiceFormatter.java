@@ -2,7 +2,7 @@ import java.util.List;
 
 public class InvoiceFormatter {
     // pointless wrapper (smell)
-    public String format(
+    public static String format(
         String invId, 
         Menu menu, 
         List<OrderLine> lines, 

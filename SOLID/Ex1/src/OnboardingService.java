@@ -4,24 +4,22 @@ public class OnboardingService {
     private final Database db;
     private final StudentParser parser;
     private final StudentValidator validator;
-    private final ConsoleReporter reporter;
 
-    public OnboardingService(Database db, StudentParser parser, StudentValidator validator, ConsoleReporter reporter) {
+    public OnboardingService(Database db, StudentParser parser, StudentValidator validator) {
         this.db = db;
         this.parser = parser;
         this.validator = validator;
-        this.reporter = reporter;
     }
 
     public void registerFromRawInput(String raw) {
 
-        reporter.printInput(raw);
+        ConsoleReporter.printInput(raw);
 
         ParsedStudent parsed = parser.parse(raw);
 
         List<String> errors = validator.validate(parsed);
         if (!errors.isEmpty()) {
-            reporter.printErrors(errors);
+            ConsoleReporter.printErrors(errors);
             return;
         }
 
@@ -37,7 +35,7 @@ public class OnboardingService {
 
         db.save(record);
 
-        reporter.printSuccess(record, db.count());
-        reporter.printDBDump(db);
+        ConsoleReporter.printSuccess(record, db.count());
+        ConsoleReporter.printDBDump(db);
     }
 }
