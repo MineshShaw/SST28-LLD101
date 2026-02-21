@@ -4,34 +4,40 @@ public class OnboardingService {
     private final Database db;
     private final StudentParser parser;
     private final StudentValidator validator;
-    private final ConsoleOnboardingReporter reporter;
+    private final ConsoleReporter reporter;
 
-    public OnboardingService(Database db, StudentParser parser, StudentValidator validator, ConsoleOnboardingReporter reporter) {
+    public OnboardingService(Database db, StudentParser parser, StudentValidator validator, ConsoleReporter reporter) {
         this.db = db;
         this.parser = parser;
         this.validator = validator;
         this.reporter = reporter;
     }
 
-    // Intentionally violates SRP: parses + validates + creates ID + saves + prints.
     public void registerFromRawInput(String raw) {
+
         reporter.printInput(raw);
 
-        Map<String, String> kv = parser.parse(raw);
+        ParsedStudent parsed = parser.parse(raw);
 
-        List<String> errors = validator.validate(kv);
-        if (errors != null) return;
-
-        String name = kv.get("name");
-        String email = kv.get("email");
-        String phone = kv.get("phone");
-        String program = kv.get("program");
+        List<String> errors = validator.validate(parsed);
+        if (!errors.isEmpty()) {
+            reporter.printErrors(errors);
+            return;
+        }
 
         String id = IdUtil.nextStudentId(db.count());
-        StudentRecord rec = new StudentRecord(id, name, email, phone, program);
 
-        db.save(rec);
+        StudentRecord record = new StudentRecord(
+                id,
+                parsed.getName(),
+                parsed.getEmail(),
+                parsed.getPhone(),
+                parsed.getProgram()
+        );
 
-        reporter.printSuccess(rec, db.count());
+        db.save(record);
+
+        reporter.printSuccess(record, db.count());
+        reporter.printDBDump(db);
     }
 }
