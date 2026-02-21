@@ -9,4 +9,9 @@ public class GymAddOn implements PricingComponent {
     public double depositAmount() {
         return 0.0;
     }
+
+    @Override
+    public String nameOf() {
+        return "Gym";
+    }
 }

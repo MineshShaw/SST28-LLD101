@@ -11,5 +11,10 @@ public class LateFee implements PricingComponent {
     public double depositAmount() {
         return 0.0;
     }
+
+    @Override
+    public String nameOf() {
+        return "Late Fee";
+    }
     
 }

@@ -9,4 +9,9 @@ public class SingleRoomPricing implements PricingComponent {
     public double depositAmount() {
         return 5000.0;
     }
+
+    @Override
+    public String nameOf() {
+        return "Single Room";
+    }
 }
