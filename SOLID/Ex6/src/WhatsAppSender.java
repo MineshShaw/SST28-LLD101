@@ -3,18 +3,18 @@ public class WhatsAppSender extends NotificationSender {
         super(audit, config);
     }
 
-    public boolean validate(Notification n) {
-        return n.phone != null && n.phone.startsWith("+");
+    @Override
+    protected SendResult validateSpecific(Notification n) {
+        if (n.phone == null || !n.phone.startsWith("+")) 
+            return SendResult.failure("WA Error: phone must start with + and country code");
+        
+        return SendResult.success();
     }
 
     @Override
-    public void sendNotification(Notification n) {
-        if (!validate(n)) {
-            System.out.println("WA ERROR: phone must start with + and country code");
-            audit.add("WA failed");
-            return;
-        }
-        System.out.println("WA -> to=" + n.phone + " body=" + n.body);
-        audit.add("wa sent");
+    protected SendResult sendNotification(Notification n) {
+        System.out.println("WA -> Sent to " + n.phone);
+        audit.add("WA sent successfully");
+        return SendResult.success();
     }
 }

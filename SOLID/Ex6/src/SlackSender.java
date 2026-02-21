@@ -3,19 +3,22 @@ public class SlackSender extends NotificationSender {
         super(audit, config);
     }
 
-    // Slack requires 'to' to be non-null (channel/user)
     public boolean validate(Notification n) {
         return n.email != null && !n.email.isEmpty();
     }
 
     @Override
-    public void sendNotification(Notification n) {
-        if (!validate(n)) {
-            System.out.println("SLACK ERROR: missing recipient email");
-            audit.add("slack failed");
-            return;
-        }
+    protected SendResult validateSpecific(Notification n) {
+        if (!validate(n)) 
+            return SendResult.failure("SLACK ERROR: missing recipient email");
+        
+        return SendResult.success();
+    }
+
+    @Override
+    protected SendResult sendNotification(Notification n) {
         System.out.println("SLACK -> to=" + n.email + " body=" + n.body);
         audit.add("slack sent");
+        return SendResult.success();
     }
 }

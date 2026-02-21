@@ -8,13 +8,17 @@ public class EmailSender extends NotificationSender {
     }
 
     @Override
-    public void sendNotification(Notification n) {
-        if (!validate(n)) {
-            System.out.println("EMAIL ERROR: invalid email address");
-            audit.add("email failed");
-            return;
-        }
+    protected SendResult validateSpecific(Notification n) {
+        if (!validate(n)) 
+            return SendResult.failure("EMAIL ERROR: invalid email address");
+        
+        return SendResult.success();
+    }
+
+    @Override
+    protected SendResult sendNotification(Notification n) {
         System.out.println("EMAIL -> to=" + n.email + " subject=" + n.subject + " body=" + n.body);
         audit.add("email sent");
+        return SendResult.success();
     }
 }

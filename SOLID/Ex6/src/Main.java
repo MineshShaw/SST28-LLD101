@@ -13,18 +13,8 @@ public class Main {
 
         email.send(n);
         sms.send(n);
-        try {
-            wa.send(n);
-        } catch (Exception ex) {
-            System.out.println("WA ERROR: " + ex.getMessage());
-            audit.add("WA failed");
-        }
-        try {
-            slack.send(n);
-        } catch (Exception ex) {
-            System.out.println("SLACK ERROR: " + ex.getMessage());
-            audit.add("SLACK failed");
-        }
+        wa.send(n);
+        slack.send(n);
 
         System.out.println("AUDIT entries=" + audit.size());
     }

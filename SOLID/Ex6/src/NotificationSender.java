@@ -7,15 +7,26 @@ public abstract class NotificationSender {
         this.config = config;
     }
 
-    public void send(Notification n) {
-        if (n.body == null || n.body.isEmpty()) {
-            throw new RuntimeException("Notification body cannot be empty");
+    public final SendResult send(Notification n) {
+        if (n.body == null || n.body.isEmpty()) return SendResult.failure("Body is empty");
+        if (n.body.length() > config.maxLen) return SendResult.failure("Body too long");
+
+        SendResult subValidation = validateSpecific(n);
+        if (!subValidation.isSuccess()) {
+            audit.add("Validation failed: " + subValidation.getError());
+            return subValidation;
         }
-        if (n.body.length() > config.maxLen) {
-            throw new RuntimeException("Notification body cannot be longer than " + config.maxLen);
+        try {
+            return sendNotification(n);
+        } catch (Exception e) {
+            audit.add("System Error: " + e.getMessage());
+            return SendResult.failure("Unexpected error: " + e.getMessage());
         }
-        sendNotification(n);
     }
 
-    protected abstract void sendNotification(Notification n);
+    protected SendResult validateSpecific(Notification n) {
+        return SendResult.success();
+    }
+
+    protected abstract SendResult sendNotification(Notification n);
 }
